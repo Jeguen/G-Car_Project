@@ -43,6 +43,10 @@ int main()
     
     h.message();
 
+    sf::Image icon;
+    icon.loadFromFile("../media/img/icon.png");
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
     // GUI
     tgui::Button::Ptr button(gui);
     button->load(THEME_CONFIG_FILE);
