@@ -17,13 +17,24 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <TGUI/TGUI.hpp>
+
 #include <g-car/hello_world.hpp>
+
+#define THEME_CONFIG_FILE "../media/TGUI/widgets/Black.conf"
 
 int main()
 {
 	// Windows
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "G-Car Controler");
 	
+	tgui::Gui gui(window);
+
+	if (!gui.setGlobalFont("../media/fonts/DejaVuSans.ttf"))
+	{
+        return 1;
+	}
+
 	// Clock
 	sf::Clock clock;
     
@@ -31,8 +42,109 @@ int main()
     gcar::hello_world h ("YOLO");
     
     h.message();
-    
-    
+
+    // GUI
+    tgui::Button::Ptr button(gui);
+    button->load(THEME_CONFIG_FILE);
+    button->setPosition(40, 25);
+    button->setText("Quit");
+    button->setCallbackId(1);
+    button->bindCallback(tgui::Button::LeftMouseClicked);
+    button->setSize(300, 40);
+
+    tgui::ChatBox::Ptr chatbox(gui);
+    chatbox->load(THEME_CONFIG_FILE);
+    chatbox->setSize(200, 100);
+    chatbox->setTextSize(20);
+    chatbox->setPosition(400, 25);
+    chatbox->addLine("Line 1", sf::Color::Red);
+    chatbox->addLine("Line 2", sf::Color::Blue);
+    chatbox->addLine("Line 3", sf::Color::Green);
+    chatbox->addLine("Line 4", sf::Color::Yellow);
+    chatbox->addLine("Line 5", sf::Color::Cyan);
+    chatbox->addLine("Line 6", sf::Color::Magenta);
+
+    tgui::Checkbox::Ptr checkbox(gui);
+    checkbox->load(THEME_CONFIG_FILE);
+    checkbox->setPosition(40, 80);
+    checkbox->setText("Checkbox");
+    checkbox->setSize(32, 32);
+
+    tgui::ChildWindow::Ptr child(gui);
+    child->load(THEME_CONFIG_FILE);
+    child->setSize(200, 100);
+    child->setBackgroundColor(sf::Color(80, 80, 80));
+    child->setPosition(400, 460);
+    child->setTitle("Child window");
+    child->setIcon("../icon.jpg");
+
+    tgui::ComboBox::Ptr comboBox(gui);
+    comboBox->load(THEME_CONFIG_FILE);
+    comboBox->setSize(120, 21);
+    comboBox->setPosition(210, 440);
+    comboBox->addItem("Item 1");
+    comboBox->addItem("Item 2");
+    comboBox->addItem("Item 3");
+    comboBox->setSelectedItem("Item 2");
+
+    tgui::EditBox::Ptr editBox(gui);
+    editBox->load(THEME_CONFIG_FILE);
+    editBox->setPosition(40, 200);
+    editBox->setSize(300, 30);
+
+    tgui::Label::Ptr label(gui);
+    label->load(THEME_CONFIG_FILE);
+    label->setText("Label");
+    label->setPosition(40, 160);
+    label->setTextColor(sf::Color(200, 200, 200));
+    label->setTextSize(24);
+
+    tgui::ListBox::Ptr listBox(gui);
+    listBox->load(THEME_CONFIG_FILE);
+    listBox->setSize(150, 120);
+    listBox->setItemHeight(20);
+    listBox->setPosition(40, 440);
+    listBox->addItem("Item 1");
+    listBox->addItem("Item 2");
+    listBox->addItem("Item 3");
+
+    tgui::LoadingBar::Ptr loadingbar(gui);
+    loadingbar->load(THEME_CONFIG_FILE);
+    loadingbar->setPosition(40, 330);
+    loadingbar->setSize(300, 30);
+    loadingbar->setValue(35);
+
+    tgui::RadioButton::Ptr radioButton(gui);
+    radioButton->load(THEME_CONFIG_FILE);
+    radioButton->setPosition(40, 120);
+    radioButton->setText("Radio Button");
+    radioButton->setSize(32, 32);
+
+    tgui::Slider::Ptr slider(gui);
+    slider->load(THEME_CONFIG_FILE);
+    slider->setVerticalScroll(false);
+    slider->setPosition(40, 250);
+    slider->setSize(300, 25);
+    slider->setValue(2);
+
+    tgui::Scrollbar::Ptr scrollbar(gui);
+    scrollbar->load(THEME_CONFIG_FILE);
+    scrollbar->setVerticalScroll(false);
+    scrollbar->setPosition(40, 290);
+    scrollbar->setSize(300, 25);
+    scrollbar->setMaximum(5);
+    scrollbar->setLowValue(3);
+
+    tgui::MenuBar::Ptr menu(gui);
+    menu->load(THEME_CONFIG_FILE);
+    menu->setSize(window.getSize().x, 20);
+    menu->addMenu("File");
+    menu->addMenuItem("File", "Load");
+    menu->addMenuItem("File", "Save");
+    menu->addMenuItem("File", "Exit");
+    menu->bindCallback(tgui::MenuBar::MenuItemClicked);
+    menu->setCallbackId(2);
+
 	// Start
 	while (window.isOpen())
 	{
@@ -78,46 +190,33 @@ int main()
 				{
 					// event.mouseButton.button
 				}
+
+				gui.handleEvent(event);
 			}
-		}
-		
-		// Time http://www.sfml-dev.org/tutorials/2.1/system-time.php
-		// In real time program, the moving speed of your objects should be multiply by the time elapsed
-		sf::Time elapsed = clock.restart();
-		
-		// elapsed.asSeconds() is the time elapsed in second in a float
-		//std::cout << elapsed.asSeconds() << std::endl;
-		
-		// Mouse http://www.sfml-dev.org/tutorials/2.1/window-inputs.php
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-		{
-			std::cout << "Mouse left button is pressed" << std::endl;
-		}
-		
-		// Keyboard http://www.sfml-dev.org/tutorials/2.1/window-inputs.php
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-		{
-			std::cout << "Left is pressed" << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-		{
-			std::cout << "Right is pressed" << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-		{
-			std::cout << "Up is pressed" << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-		{
-			std::cout << "Down is pressed" << std::endl;
+
+			tgui::Callback callback;
+	        while (gui.pollCallback(callback))
+	        {
+	            if (callback.id == 1)
+	                window.close();
+
+	            else if (callback.id == 2)
+	            {
+	                if (callback.text == "Exit")
+	                    window.close();
+	            }
+	        }
 		}
 		
 		// Clear the screen
-		window.clear(sf::Color::Black);
+		window.clear(sf::Color::White);
 		
 		// Draw http://www.sfml-dev.org/tutorials/2.1/graphics-draw.php
 		// TODO
-		
+
+		// Draw GUI
+		gui.draw();
+
 		// Display
 		window.display();
 	}
