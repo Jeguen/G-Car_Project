@@ -24,10 +24,18 @@ https://github.com/texus/TGUI
 
 Use CMake to build G-Car Controler:
 ---------------------------------------
-mkdir build
-cd build
-cmake ..
-make
+- mkdir build
+- cd build
+- cmake ..
+- make
+
+Use Code::Blocks to build G-Car Controler (Windows)
+----------------------------------------
+- In order to compile G-Car Controler, you need to use Mingw32 4.7.2 : 
+http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.7.2/32-bit/threads-posix/sjlj/x32-4.7.2-release-posix-sjlj-rev11.7z/download
+- Go to Settings/Compilers/Toolchain executables
+- Edit all executables
+- Now you can build and run the project
 
 Run the executable:
 ------------------

@@ -1,11 +1,11 @@
-// Copyright Â© 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
+// Copyright © 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ int main()
 {
 	// Windows
 	sf::RenderWindow window(sf::VideoMode(1024, 768), "G-Car Controler");
-	
+
 	tgui::Gui gui(window);
 
 	if (!gui.setGlobalFont("../media/fonts/DejaVuSans.ttf"))
@@ -37,10 +37,10 @@ int main()
 
 	// Clock
 	sf::Clock clock;
-    
+
     // Hello World
     gcar::hello_world h ("YOLO");
-    
+
     h.message();
 
     sf::Image icon;
@@ -80,7 +80,6 @@ int main()
     child->setBackgroundColor(sf::Color(80, 80, 80));
     child->setPosition(400, 460);
     child->setTitle("Child window");
-    child->setIcon("../icon.jpg");
 
     tgui::ComboBox::Ptr comboBox(gui);
     comboBox->load(THEME_CONFIG_FILE);
@@ -155,7 +154,7 @@ int main()
 		// Event http://www.sfml-dev.org/tutorials/2.1/window-events.php
 		{
 			sf::Event event;
-			
+
 			while (window.pollEvent(event))
 			{
 				// Close
@@ -211,10 +210,10 @@ int main()
 	            }
 	        }
 		}
-		
+
 		// Clear the screen
 		window.clear(sf::Color::White);
-		
+
 		// Draw http://www.sfml-dev.org/tutorials/2.1/graphics-draw.php
 		// TODO
 
@@ -224,6 +223,6 @@ int main()
 		// Display
 		window.display();
 	}
-	
+
 	return 0;
 }

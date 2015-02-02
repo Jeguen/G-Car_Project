@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="G-Car_Controler" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/G-Car_Controler" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add directory="../src/include" />
+					<Add directory="../src/SFML/include" />
+					<Add directory="../src/TGUI-0.6/include" />
+				</Compiler>
+				<Linker>
+					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
+					<Add library="..\src\SFML\lib\libsfml-window.a" />
+					<Add library="..\src\SFML\lib\libsfml-system.a" />
+					<Add library="..\src\TGUI-0.6\lib\libtgui.a" />
+					<Add directory="../src/SFML/lib" />
+					<Add directory="../src/TGUI-0.6/lib" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/G-Car_Controler" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add option="-g" />
+					<Add directory="../src/include" />
+					<Add directory="../src/SFML/include" />
+					<Add directory="../src/TGUI-0.6/include" />
+				</Compiler>
+				<Linker>
+					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
+					<Add library="..\src\SFML\lib\libsfml-window.a" />
+					<Add library="..\src\SFML\lib\libsfml-system.a" />
+					<Add library="..\src\TGUI-0.6\lib\libtgui.a" />
+					<Add directory="../src/SFML/lib" />
+					<Add directory="../src/TGUI-0.6/lib" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
