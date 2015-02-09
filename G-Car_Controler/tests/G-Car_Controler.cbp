@@ -16,15 +16,15 @@
 					<Add option="-g" />
 					<Add directory="../src/include" />
 					<Add directory="../src/SFML/include" />
-					<Add directory="../src/TGUI-0.6/include" />
+					<Add directory="../src/tgui/include" />
 				</Compiler>
 				<Linker>
 					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
 					<Add library="..\src\SFML\lib\libsfml-window.a" />
 					<Add library="..\src\SFML\lib\libsfml-system.a" />
-					<Add library="..\src\TGUI-0.6\lib\libtgui.a" />
+					<Add library="..\src\tgui\lib\libtgui.a" />
 					<Add directory="../src/SFML/lib" />
-					<Add directory="../src/TGUI-0.6/lib" />
+					<Add directory="../src/tgui/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -38,15 +38,15 @@
 					<Add option="-g" />
 					<Add directory="../src/include" />
 					<Add directory="../src/SFML/include" />
-					<Add directory="../src/TGUI-0.6/include" />
+					<Add directory="../src/tgui/include" />
 				</Compiler>
 				<Linker>
 					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
 					<Add library="..\src\SFML\lib\libsfml-window.a" />
 					<Add library="..\src\SFML\lib\libsfml-system.a" />
-					<Add library="..\src\TGUI-0.6\lib\libtgui.a" />
+					<Add library="..\src\tgui\lib\libtgui.a" />
 					<Add directory="../src/SFML/lib" />
-					<Add directory="../src/TGUI-0.6/lib" />
+					<Add directory="../src/tgui/lib" />
 				</Linker>
 			</Target>
 		</Build>
