@@ -25,7 +25,7 @@
 int main()
 {
 	// Windows
-    sf::RenderWindow window(sf::VideoMode(1024, 768), "G-Car Controler", sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "G-Car Controler");
 
     gcar::menu::start_app(window);
 
