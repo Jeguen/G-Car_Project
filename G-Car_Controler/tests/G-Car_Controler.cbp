@@ -22,6 +22,7 @@
 					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
 					<Add library="..\src\SFML\lib\libsfml-window.a" />
 					<Add library="..\src\SFML\lib\libsfml-system.a" />
+					<Add library="..\src\SFML\lib\libsfml-audio.a" />
 					<Add library="..\src\tgui\lib\libtgui.a" />
 					<Add directory="../src/SFML/lib" />
 					<Add directory="../src/tgui/lib" />
@@ -44,6 +45,7 @@
 					<Add library="..\src\SFML\lib\libsfml-graphics.a" />
 					<Add library="..\src\SFML\lib\libsfml-window.a" />
 					<Add library="..\src\SFML\lib\libsfml-system.a" />
+					<Add library="..\src\SFML\lib\libsfml-audio.a" />
 					<Add library="..\src\tgui\lib\libtgui.a" />
 					<Add directory="../src/SFML/lib" />
 					<Add directory="../src/tgui/lib" />
@@ -53,6 +55,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="../src/include/g-car/hello_world.hpp" />
+		<Unit filename="../src/include/g-car/menu.hpp" />
+		<Unit filename="../src/include/g-car/menu/intro_application.hpp" />
+		<Unit filename="../src/include/g-car/menu/main_application.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

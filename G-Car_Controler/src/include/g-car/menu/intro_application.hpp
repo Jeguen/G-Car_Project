@@ -1,11 +1,11 @@
-// Copyright © 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
+﻿// Copyright © 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,6 @@
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
 
-#include <thoth/sprite_centered.hpp>
-#include <thoth/textures.hpp>
-
 #include "main_application.hpp"
 
 #define THEME_CONFIG_FILE "../media/TGUI/widgets/Black.conf"
@@ -30,15 +27,15 @@ namespace gcar
 {
 	/**
 	 * @brief Provides menu functions
-	 * 
+	 *
 	 * @code
 		#include <TGUI/TGUI.hpp>
 	    #include <SFML/Graphics.hpp>
 	    #include "menu/main_menu.hpp"
 	 * @endcode
-	 * 
+	 *
 	 */
-	
+
 	namespace menu
 	{
 
@@ -47,7 +44,7 @@ namespace gcar
 			tgui::Gui gui(window);
 
 			auto progressBar = tgui::ProgressBar::create(THEME_CONFIG_FILE);
-			
+
 			try
 		    {
 		        gui.setGlobalFont("../media/fonts/DejaVuSans.ttf");
@@ -73,13 +70,13 @@ namespace gcar
 		        std::cerr << "Failed to load TGUI widgets: " << e.what() << std::endl;
 		        exit(1);
 		    }
-			
+
 		    sf::SoundBuffer buffer;
 		    if (!buffer.loadFromFile("../media/sound/welcome.ogg"))
 		    {
-		        
+
 		    }
-		    
+
 		    sf::Sound sound;
 		    sound.setBuffer(buffer);
 		    sound.play();
@@ -92,7 +89,7 @@ namespace gcar
 		    sf::Sprite sprite;
 		    sprite.setTexture(texture);
 		    sprite.setPosition(sf::Vector2f(window.getSize().x/2 - sprite.getTexture()->getSize().x/2 , window.getSize().y/2 - sprite.getTexture()->getSize().y/2));
-		    
+
 		    sprite.setColor(sf::Color(255,255,255,0));
 
 		    sf::Clock clock;
@@ -162,8 +159,8 @@ namespace gcar
 
 				sf::Time elapsed1 = clock.getElapsedTime();
 		        std::cout << elapsed1.asSeconds() << std::endl;
-		        
-		        if(int(elapsed1.asMilliseconds())%1 == 0 && alpha <255 && transition)
+
+		        if(int(elapsed1.asMilliseconds())%2 == 0 && alpha <255 && transition)
 		        {
 		            alpha++;
 		            sprite.setColor(sf::Color(255,255,255,alpha));
@@ -173,13 +170,13 @@ namespace gcar
 		                progressBar->show();
 		            }
 		        }
-		        
+
 		        if (!transition)
 		        {
 		        	if(int(elapsed1.asMilliseconds())%4 == 0 && percent < 100)
 		        	{
 		        		percent++;
-		        		progressBar->setValue(percent);	
+		        		progressBar->setValue(percent);
 		        	}
 		        }
 
@@ -194,13 +191,13 @@ namespace gcar
 				// Draw GUI
 				gui.draw();
 
-				
+
 
 				// Display
 				window.display();
 			}
 		}
 	}
-	
+
 }
-#endif 
+#endif
