@@ -19,6 +19,7 @@
 #include <SFML/Audio.hpp>
 #include <TGUI/TGUI.hpp>
 
+#include "menu/intro_application.hpp"
 #include "menu/main_application.hpp"
 
 namespace gcar
@@ -29,7 +30,8 @@ namespace gcar
 	 * @code
 		#include <TGUI/TGUI.hpp>
 	    #include <SFML/Audio.hpp>
-	    #include "menu/main_menu.hpp"
+        #include "menu/intro_application.hpp"
+	    #include "menu/main_application.hpp"
 	 * @endcode
 	 * 
 	 */

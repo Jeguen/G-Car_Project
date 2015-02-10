@@ -13,8 +13,8 @@
 // limitations under the License.
 
 
-#ifndef GCAR_PROJECT_MENU_MAIN_MENU_HPP
-#define GCAR_PROJECT_MENU_MAIN_MENU_HPP
+#ifndef GCAR_PROJECT_MENU_MAIN_APPLICATION_HPP
+#define GCAR_PROJECT_MENU_MAIN_APPLICATION_HPP
 
 #include <SFML/Graphics.hpp>
 #include <TGUI/TGUI.hpp>
@@ -30,9 +30,9 @@ namespace gcar
 	 * @brief Provides menu functions
 	 * 
 	 * @code
+		#include <SFML/Graphics.hpp>
 		#include <TGUI/TGUI.hpp>
-	    #include <SFML/Graphics.hpp>
-	    #include "menu/main_menu.hpp"
+		#include "../hello_world.hpp"
 	 * @endcode
 	 * 
 	 */
@@ -43,6 +43,10 @@ namespace gcar
 		void function(const tgui::Callback& callback)
 		{
 			std::cout << "You pressed the '" << callback.text.toAnsiString() << "' button." << std::endl;
+			if(callback.text.toAnsiString() == "Exit")
+			{
+				exit(0);
+			}
 		}
 
 		inline void start_app (sf::RenderWindow & window)
@@ -63,92 +67,75 @@ namespace gcar
 			    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 			    // GUI
-			    tgui::Button::Ptr button = tgui::Button::create(THEME_CONFIG_FILE);
-			    button->setPosition(40, 25);
-			    button->setText("Quit");
-			    button->setSize(300, 40);
-			    button->connect("pressed", [&](){ window.close(); });
-			    gui.add(button);
-
-			    
-			    tgui::ChatBox::Ptr chatbox = tgui::ChatBox::create(THEME_CONFIG_FILE);
-			    chatbox->setSize(200, 100);
-			    chatbox->setTextSize(20);
-			    chatbox->setPosition(400, 25);
-			    chatbox->addLine("Line 1", sf::Color::Red);
-			    chatbox->addLine("Line 2", sf::Color::Blue);
-			    chatbox->addLine("Line 3", sf::Color::Green);
-			    chatbox->addLine("Line 4", sf::Color::Yellow);
-			    chatbox->addLine("Line 5", sf::Color::Cyan);
-			    chatbox->addLine("Line 6", sf::Color::Magenta);
-			    gui.add(chatbox);
-				
-			    tgui::Checkbox::Ptr checkbox = tgui::Checkbox::create(THEME_CONFIG_FILE);
-			    checkbox->setPosition(40, 80);
-			    checkbox->setText("Checkbox");
-			    checkbox->setSize(32, 32);
-			    gui.add(checkbox);
-				
-			    tgui::ChildWindow::Ptr child = tgui::ChildWindow::create(THEME_CONFIG_FILE);
-			    child->setSize(200, 100);
-			    child->setPosition(400, 460);
-			    child->setTitle("Child window");
-			    gui.add(child);
-				
-			    tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create(THEME_CONFIG_FILE);
-			    comboBox->setSize(120, 21);
-			    comboBox->setPosition(210, 440);
-			    comboBox->addItem("Item 1");
-			    comboBox->addItem("Item 2");
-			    comboBox->addItem("Item 3");
-			    comboBox->setSelectedItem("Item 2");
-			    gui.add(comboBox);
-				
-			    tgui::EditBox::Ptr editBox = tgui::EditBox::create(THEME_CONFIG_FILE);
-			    editBox->setPosition(40, 200);
-			    editBox->setSize(300, 30);
-			    gui.add(editBox);
-
-			    tgui::Label::Ptr label = tgui::Label::create(THEME_CONFIG_FILE);
-			    label->setText("Label");
-			    label->setPosition(40, 160);
-			    label->setTextColor(sf::Color(200, 200, 200));
-			    label->setTextSize(24);
-			    gui.add(label);
-
 			    tgui::ListBox::Ptr listBox = tgui::ListBox::create(THEME_CONFIG_FILE);
-			    listBox->setSize(150, 120);
+			    listBox->setSize(windowWidth/2, windowHeight/2);
 			    listBox->setItemHeight(20);
-			    listBox->setPosition(40, 440);
+			    listBox->setPosition(windowWidth/2, windowHeight/2);
 			    listBox->addItem("Item 1");
 			    listBox->addItem("Item 2");
 			    listBox->addItem("Item 3");
 			    gui.add(listBox);
 
-			    tgui::RadioButton::Ptr radioButton = tgui::RadioButton::create(THEME_CONFIG_FILE);
-			    radioButton->setPosition(40, 120);
-			    radioButton->setText("Radio Button");
-			    radioButton->setSize(32, 32);
-			    gui.add(radioButton);
+			    tgui::Button::Ptr btn_selection = tgui::Button::create(THEME_CONFIG_FILE);
+			    btn_selection->setText("Select");
+			    btn_selection->setSize(windowWidth/4, windowHeight / 12);
+			    btn_selection->setPosition(windowWidth * 1/8 , windowHeight * 3/4);
+			    btn_selection->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
+			    gui.add(btn_selection);
 
-			    tgui::Scrollbar::Ptr scrollbar = tgui::Scrollbar::create(THEME_CONFIG_FILE);
-			    scrollbar->setPosition(40, 290);
-			    scrollbar->setSize(300, 25);
-			    scrollbar->setMaximum(5);
-			    scrollbar->setLowValue(3);
-			    gui.add(scrollbar);
+			    tgui::RadioButton::Ptr radio_auto = tgui::RadioButton::create(THEME_CONFIG_FILE);
+			    radio_auto->setPosition(0, windowHeight * 3/4 - btn_selection->getSize().y);
+			    radio_auto->setText("Automatic");
+			    radio_auto->setSize(windowWidth/35, windowWidth/35);
+			    gui.add(radio_auto);
+
+			    tgui::RadioButton::Ptr radio_manuel = tgui::RadioButton::create(THEME_CONFIG_FILE);
+			    radio_manuel->setSize(windowWidth/35, windowWidth/35);
+			    radio_manuel->setPosition(windowWidth * 3/8, windowHeight * 3/4 - btn_selection->getSize().y );
+			    radio_manuel->setText("Manuel");
+			    gui.add(radio_manuel);
 
 			    tgui::MenuBar::Ptr menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
 			    menu->setSize(windowWidth, 20);
 			    menu->addMenu("File");
-			    menu->addMenuItem("File", "Connect");
 			    menu->addMenuItem("File", "Save");
 			    menu->addMenuItem("File", "Exit");
-			    menu->addMenu("Edit");
 			    menu->addMenu("Settings");
+			    menu->addMenuItem("Settings", "Connect");
+			    menu->addMenuItem("Settings", "Disconnect");
 			    menu->addMenu("Help");
+			    menu->addMenuItem("Help", "About");
 			    menu->connectEx("MenuItemClicked", function);
 			    gui.add(menu);
+
+			    tgui::Button::Ptr btn_up = tgui::Button::create(THEME_CONFIG_FILE);
+			    btn_up->setText("Up");
+			    btn_up->setSize(windowWidth/4, windowHeight / 10);
+			    btn_up->setPosition(windowWidth *5/8, windowHeight * 1/8);
+			    btn_up->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
+			    gui.add(btn_up);
+			    
+			    tgui::Button::Ptr btn_down = tgui::Button::create(THEME_CONFIG_FILE);
+			    btn_down->setText("Down");
+			    btn_down->setSize(windowWidth/4, windowHeight / 10);
+			    btn_down->setPosition(windowWidth * 5/8 , windowHeight * 3/8);
+			    btn_down->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
+			    gui.add(btn_down);
+
+			    tgui::Button::Ptr btn_left = tgui::Button::create(THEME_CONFIG_FILE);
+			    btn_left->setText("Left");
+			    btn_left->setSize(windowWidth/4, windowHeight / 10);
+			    btn_left->setPosition(windowWidth/2 , windowHeight/4);
+			    btn_left->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
+			    gui.add(btn_left);
+
+			    tgui::Button::Ptr btn_right = tgui::Button::create(THEME_CONFIG_FILE);
+			    btn_right->setText("Right");
+			    btn_right->setSize(windowWidth/4, windowHeight / 10);
+			    btn_right->setPosition(windowWidth * 3/4 , windowHeight/4);
+			    btn_right->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
+			    gui.add(btn_right);
+
 		    }
 		    catch (const tgui::Exception& e)
 		    {
