@@ -1,5 +1,5 @@
 [Buildset]
-BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r)
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x03\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r\x00\x00\x00\x12\x00t\x00e\x00s\x00t\x00_\x00_\x00t\x00c\x00p\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r\x00\x00\x00\x14\x00t\x00e\x00s\x00t\x00_\x00_\x00m\x00a\x00i\x00n)
 
 [CMake]
 Build Directory Count=1
@@ -19,8 +19,181 @@ Name=GCC
 Path=gcc
 Type=GCC
 
+[Filters]
+size=34
+
+[Filters][0]
+inclusive=0
+pattern=.*
+targets=3
+
+[Filters][1]
+inclusive=0
+pattern=.git
+targets=2
+
+[Filters][10]
+inclusive=0
+pattern=*.a
+targets=1
+
+[Filters][11]
+inclusive=0
+pattern=*.so
+targets=1
+
+[Filters][12]
+inclusive=0
+pattern=*.so.*
+targets=1
+
+[Filters][13]
+inclusive=0
+pattern=moc_*.cpp
+targets=1
+
+[Filters][14]
+inclusive=0
+pattern=*.moc
+targets=1
+
+[Filters][15]
+inclusive=0
+pattern=ui_*.h
+targets=1
+
+[Filters][16]
+inclusive=0
+pattern=qrc_*.cpp
+targets=1
+
+[Filters][17]
+inclusive=0
+pattern=*~
+targets=1
+
+[Filters][18]
+inclusive=0
+pattern=.*.kate-swp
+targets=1
+
+[Filters][19]
+inclusive=0
+pattern=.*.swp
+targets=1
+
+[Filters][2]
+inclusive=0
+pattern=CVS
+targets=2
+
+[Filters][20]
+inclusive=0
+pattern=*.pyc
+targets=1
+
+[Filters][21]
+inclusive=0
+pattern=*.pyo
+targets=1
+
+[Filters][22]
+inclusive=0
+pattern=__pycache__
+targets=1
+
+[Filters][23]
+inclusive=0
+pattern=/tests/G-Car_Controler.cbp
+targets=1
+
+[Filters][24]
+inclusive=0
+pattern=/tests/G-Car_Controler.depend
+targets=1
+
+[Filters][25]
+inclusive=0
+pattern=/tests/G-Car_Controler.layout
+targets=1
+
+[Filters][26]
+inclusive=0
+pattern=/tests/libsndfile-1.dll
+targets=1
+
+[Filters][27]
+inclusive=0
+pattern=/tests/openal32.dll
+targets=1
+
+[Filters][28]
+inclusive=0
+pattern=/tests/sfml-audio-2.dll
+targets=1
+
+[Filters][29]
+inclusive=0
+pattern=/tests/sfml-graphics-2.dll
+targets=1
+
+[Filters][3]
+inclusive=0
+pattern=.svn
+targets=2
+
+[Filters][30]
+inclusive=0
+pattern=/tests/sfml-network-2.dll
+targets=1
+
+[Filters][31]
+inclusive=0
+pattern=/tests/sfml-system-2.dll
+targets=1
+
+[Filters][32]
+inclusive=0
+pattern=/tests/sfml-window-2.dll
+targets=1
+
+[Filters][33]
+inclusive=0
+pattern=/tests/tgui.dll
+targets=1
+
+[Filters][4]
+inclusive=0
+pattern=_svn
+targets=2
+
+[Filters][5]
+inclusive=0
+pattern=SCCS
+targets=2
+
+[Filters][6]
+inclusive=0
+pattern=_darcs
+targets=2
+
+[Filters][7]
+inclusive=0
+pattern=.hg
+targets=2
+
+[Filters][8]
+inclusive=0
+pattern=.bzr
+targets=2
+
+[Filters][9]
+inclusive=0
+pattern=*.o
+targets=1
+
 [Launch]
-Launch Configurations=Launch Configuration 0
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -29,9 +202,51 @@ Name=test__main
 Type=Native Application
 
 [Launch][Launch Configuration 0][Data]
-Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r\x00\x00\x00\x14\x00t\x00e\x00s\x00t\x00_\x00_\x00m\x00a\x00i\x00n)
-Dependency Action=Build
+Configured from ProjectItem=G-Car_Controler,test__main
 Project Target=G-Car_Controler,test__main
+Working Directory=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/build/
+isExecutable=false
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=test__tcp
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x02\x00\x00\x00\x1e\x00G\x00-\x00C\x00a\x00r\x00_\x00C\x00o\x00n\x00t\x00r\x00o\x00l\x00e\x00r\x00\x00\x00\x12\x00t\x00e\x00s\x00t\x00_\x00_\x00t\x00c\x00p)
+Dependency Action=Build
+EnvironmentGroup=
+Executable=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=G-Car_Controler,test__tcp
+Use External Terminal=false
+Working Directory=
+isExecutable=false
+
+[Launch][Launch Configuration 2]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=test__tcp_server
+Type=Native Application
+
+[Launch][Launch Configuration 2][Data]
+Configured from ProjectItem=G-Car_Controler,test__tcp_server
+Project Target=G-Car_Controler,test__tcp_server
+Working Directory=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/build/
+isExecutable=false
+
+[Launch][Launch Configuration 3]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=test__tcp_client
+Type=Native Application
+
+[Launch][Launch Configuration 3][Data]
+Project Target=G-Car_Controler,test__tcp_client
+Working Directory=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/build/
+isExecutable=false
 
 [Project]
 VersionControlSupport=kdevgit
