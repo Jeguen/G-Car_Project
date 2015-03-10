@@ -1,4 +1,4 @@
-﻿// Copyright © 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
+// Copyright © 2015 Rodolphe Cargnello, rodolphe.cargnello@gmail.com
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ namespace gcar
 			    auto windowHeight = tgui::bindHeight(gui);
 
 			    sf::Image icon;
-			    icon.loadFromFile("../media/img/icon.png");
+			    icon.loadFromFile("../media/img/1.png");
 			    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 			    progressBar->setPosition(windowWidth/4, windowHeight * 3/4);
@@ -81,7 +81,7 @@ namespace gcar
 		    sound.setBuffer(buffer);
 		    sound.play();
 		    sf::Texture texture;
-		    if (!texture.loadFromFile("../media/img/icon.png"))
+		    if (!texture.loadFromFile("../media/img/Untitled.png"))
 		    {
 		        // erreur...
 		    }
@@ -160,7 +160,7 @@ namespace gcar
 				sf::Time elapsed1 = clock.getElapsedTime();
 		        std::cout << elapsed1.asSeconds() << std::endl;
 
-		        if(int(elapsed1.asMilliseconds())%2 == 0 && alpha <255 && transition)
+		        if(int(elapsed1.asMilliseconds())%1 == 0 && alpha <255 && transition)
 		        {
 		            alpha++;
 		            sprite.setColor(sf::Color(255,255,255,alpha));
@@ -173,7 +173,7 @@ namespace gcar
 
 		        if (!transition)
 		        {
-		        	if(int(elapsed1.asMilliseconds())%4 == 0 && percent < 100)
+		        	if(int(elapsed1.asMilliseconds())%2 == 0 && percent < 100)
 		        	{
 		        		percent++;
 		        		progressBar->setValue(percent);

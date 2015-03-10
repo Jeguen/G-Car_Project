@@ -40,18 +40,23 @@ namespace gcar
 	namespace menu
 	{
 
-		void function(const tgui::Callback& callback)
+		void menu_navigation(sf::RenderWindow & window,const tgui::Callback& callback)
 		{
 			std::cout << "You pressed the '" << callback.text.toAnsiString() << "' button." << std::endl;
 			if(callback.text.toAnsiString() == "Exit")
 			{
 				exit(0);
 			}
+			else if(callback.text.toAnsiString() == "About")
+			{
+				//gcar::menu::intro_app();
+			}
 		}
 
 		inline void start_app (sf::RenderWindow & window)
 		{
 			tgui::Gui gui(window);
+
 			
 			try
 		    {
@@ -71,9 +76,11 @@ namespace gcar
 			    listBox->setSize(windowWidth/2, windowHeight/2);
 			    listBox->setItemHeight(20);
 			    listBox->setPosition(windowWidth/2, windowHeight/2);
-			    listBox->addItem("Item 1");
-			    listBox->addItem("Item 2");
-			    listBox->addItem("Item 3");
+			    listBox->addItem("Vitesse de deplacement : m/s");
+			    listBox->addItem("Gyrometre :");
+			    listBox->addItem("Positionnement :");
+			    listBox->addItem("Odometre :");
+			    listBox->addItem("Infrarouge :");
 			    gui.add(listBox);
 
 			    tgui::Button::Ptr btn_selection = tgui::Button::create(THEME_CONFIG_FILE);
@@ -105,7 +112,7 @@ namespace gcar
 			    menu->addMenuItem("Settings", "Disconnect");
 			    menu->addMenu("Help");
 			    menu->addMenuItem("Help", "About");
-			    menu->connectEx("MenuItemClicked", function);
+			    menu->connectEx("MenuItemClicked", menu_navigation, std::ref(window));
 			    gui.add(menu);
 
 			    tgui::Button::Ptr btn_up = tgui::Button::create(THEME_CONFIG_FILE);
