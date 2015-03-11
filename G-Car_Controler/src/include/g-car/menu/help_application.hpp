@@ -39,11 +39,9 @@ namespace gcar
 	namespace menu
 	{
 
-		inline void intro_app (sf::RenderWindow & window)
+		inline void help_app (sf::RenderWindow & window)
 		{
 			tgui::Gui gui(window);
-
-			auto progressBar = tgui::ProgressBar::create(THEME_CONFIG_FILE);
 
 			try
 		    {
@@ -54,15 +52,21 @@ namespace gcar
 			    auto windowWidth = tgui::bindWidth(gui);
 			    auto windowHeight = tgui::bindHeight(gui);
 
+			    tgui::MenuBar::Ptr menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
+			    menu->setSize(windowWidth, 20);
+			    menu->addMenu("File");
+			    menu->addMenuItem("File", "Save");
+			    menu->addMenuItem("File", "Exit");
+			    menu->addMenu("Settings");
+			    menu->addMenuItem("Settings", "Connect");
+			    menu->addMenuItem("Settings", "Disconnect");
+			    menu->addMenu("Help");
+			    menu->addMenuItem("Help", "About");
+			    gui.add(menu);
+
 			    sf::Image icon;
 			    icon.loadFromFile("../media/img/icon.png");
 			    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-			    progressBar->setPosition(windowWidth/4, windowHeight * 3/4);
-			    progressBar->setSize(windowWidth/2, 30);
-			    progressBar->setValue(0);
-			    progressBar->hide();
-			    gui.add(progressBar);
 
 		    }
 		    catch (const tgui::Exception& e)
@@ -70,32 +74,6 @@ namespace gcar
 		        std::cerr << "Failed to load TGUI widgets: " << e.what() << std::endl;
 		        exit(1);
 		    }
-
-		    sf::SoundBuffer buffer;
-		    if (!buffer.loadFromFile("../media/sound/welcome.ogg"))
-		    {
-
-		    }
-
-		    sf::Sound sound;
-		    sound.setBuffer(buffer);
-		    sound.play();
-		    sf::Texture texture;
-		    if (!texture.loadFromFile("../media/img/icon.png"))
-		    {
-		        // erreur...
-		    }
-
-		    sf::Sprite sprite;
-		    sprite.setTexture(texture);
-		    sprite.setPosition(sf::Vector2f(window.getSize().x/2 - sprite.getTexture()->getSize().x/2 , window.getSize().y/2 - sprite.getTexture()->getSize().y/2));
-
-		    sprite.setColor(sf::Color(255,255,255,0));
-
-		    sf::Clock clock;
-		    int alpha = 0;
-		    int percent = 0;
-		    bool transition = true;
 
 			// Start
 			while (window.isOpen())
@@ -154,40 +132,6 @@ namespace gcar
 
 				// Clear the screen
 				window.clear(sf::Color(132,132,130));
-
-				sprite.setPosition(sf::Vector2f(window.getSize().x/2 - sprite.getTexture()->getSize().x/2 , window.getSize().y/2 - sprite.getTexture()->getSize().y/2));
-
-				sf::Time elapsed1 = clock.getElapsedTime();
-		        std::cout << elapsed1.asSeconds() << std::endl;
-
-		        if(int(elapsed1.asMilliseconds())%1 == 0 && alpha <255 && transition)
-		        {
-		            alpha++;
-		            sprite.setColor(sf::Color(255,255,255,alpha));
-		            if(alpha == 255)
-		            {
-		                transition = false;
-		                progressBar->show();
-		            }
-		        }
-
-		        if (!transition)
-		        {
-		        	if(int(elapsed1.asMilliseconds())%2 == 0 && percent < 100)
-		        	{
-		        		percent++;
-		        		progressBar->setValue(percent);
-		        	}
-		        }
-
-		        if(percent == 100)
-		        {
-		        	menu::start_app(window);
-		        }
-
-				// Draw http://www.sfml-dev.org/tutorials/2.1/graphics-draw.php
-				// TODO
-				window.draw(sprite);
 				// Draw GUI
 				gui.draw();
 

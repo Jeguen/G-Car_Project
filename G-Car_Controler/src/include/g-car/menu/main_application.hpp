@@ -17,9 +17,11 @@
 #define GCAR_PROJECT_MENU_MAIN_APPLICATION_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <TGUI/TGUI.hpp>
 
 #include "../hello_world.hpp"
+#include "help_application.hpp"
 
 
 #define THEME_CONFIG_FILE "../media/TGUI/widgets/Black.conf"
@@ -49,15 +51,14 @@ namespace gcar
 			}
 			else if(callback.text.toAnsiString() == "About")
 			{
-				//gcar::menu::intro_app();
+				gcar::menu::help_app(window);
 			}
 		}
 
 		inline void start_app (sf::RenderWindow & window)
 		{
 			tgui::Gui gui(window);
-
-			
+			auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);		
 			try
 		    {
 		        gui.setGlobalFont("../media/fonts/DejaVuSans.ttf");
@@ -143,6 +144,11 @@ namespace gcar
 			    btn_right->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
 			    gui.add(btn_right);
 
+			    child->setSize(250, 120);
+				child->setPosition(windowWidth/2-250/2, windowHeight/2-120/2);
+				child->setTitle("Child window");
+				gui.add(child);
+
 		    }
 		    catch (const tgui::Exception& e)
 		    {
@@ -154,6 +160,10 @@ namespace gcar
 		    gcar::hello_world h ("Hello G-Car !!!");
 		    h.message();
 			
+			sf::Clock clock;
+			sf::Time elapsed;
+
+
 			// Start
 			while (window.isOpen())
 			{
@@ -209,6 +219,14 @@ namespace gcar
 					}
 				}
 
+				elapsed = clock.getElapsedTime();
+
+				if(elapsed.asSeconds() > 10)
+				{
+					child->hide();
+				}
+
+				std::cout << elapsed.asSeconds() << std::endl;
 				// Clear the screen
 				window.clear(sf::Color(132,132,130));
 

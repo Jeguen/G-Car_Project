@@ -44,6 +44,7 @@ namespace gcar
 			tgui::Gui gui(window);
 
 			auto progressBar = tgui::ProgressBar::create(THEME_CONFIG_FILE);
+			
 
 			try
 		    {
@@ -63,6 +64,7 @@ namespace gcar
 			    progressBar->setValue(0);
 			    progressBar->hide();
 			    gui.add(progressBar);
+			    
 
 		    }
 		    catch (const tgui::Exception& e)
