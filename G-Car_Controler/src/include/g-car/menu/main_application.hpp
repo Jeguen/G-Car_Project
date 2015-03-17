@@ -15,12 +15,17 @@
 
 #ifndef GCAR_PROJECT_MENU_MAIN_APPLICATION_HPP
 #define GCAR_PROJECT_MENU_MAIN_APPLICATION_HPP
+#include <concept_check.hpp>
+
+#include <stdio.h>
+#include <thread>
+#include <string.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Network.hpp>
 #include <TGUI/TGUI.hpp>
 
-#include "../hello_world.hpp"
 #include "help_application.hpp"
 
 
@@ -41,8 +46,21 @@ namespace gcar
 	
 	namespace menu
 	{
+		
+		sf::TcpListener listener;
+		sf::TcpSocket socket;
+		bool client_ok = false;
+		
+		
+		inline void client_connection() 
+		{
+			listener.accept(socket);
+			client_ok = true;
+		}
 
-		void menu_navigation(sf::RenderWindow & window,const tgui::Callback& callback)
+		sf::Thread t1(&client_connection);
+
+		void menu_navigation(sf::RenderWindow & window, sf::TcpSocket & socket, const tgui::Callback& callback)
 		{
 			std::cout << "You pressed the '" << callback.text.toAnsiString() << "' button." << std::endl;
 			if(callback.text.toAnsiString() == "Exit")
@@ -53,16 +71,32 @@ namespace gcar
 			{
 				gcar::menu::help_app(window);
 			}
+			else if(callback.text.toAnsiString() == "Connect")
+			{
+				t1.launch();
+			}
+			else if(callback.text.toAnsiString() == "Disconnect")
+			{
+				client_ok = false;
+				socket.disconnect();
+			}
 		}
 
 		inline void start_app (sf::RenderWindow & window)
 		{
 			tgui::Gui gui(window);
-			auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);		
+			auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);
+			auto slider = tgui::Slider::create(THEME_CONFIG_FILE);
+			auto radio_auto = tgui::RadioButton::create(THEME_CONFIG_FILE);
+			auto radio_manuel = tgui::RadioButton::create(THEME_CONFIG_FILE);
+			auto menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
+			auto listBox = tgui::ListBox::create(THEME_CONFIG_FILE);
+			auto btn_start = tgui::Button::create(THEME_CONFIG_FILE);
+			auto btn_stop = tgui::Button::create(THEME_CONFIG_FILE);
 			try
 		    {
 		        gui.setGlobalFont("../media/fonts/DejaVuSans.ttf");
-
+				
 				// Get a bound version of the window size
 			    // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
 			    auto windowWidth = tgui::bindWidth(gui);
@@ -73,37 +107,66 @@ namespace gcar
 			    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
 			    // GUI
-			    tgui::ListBox::Ptr listBox = tgui::ListBox::create(THEME_CONFIG_FILE);
 			    listBox->setSize(windowWidth/2, windowHeight/2);
 			    listBox->setItemHeight(20);
 			    listBox->setPosition(windowWidth/2, windowHeight/2);
-			    listBox->addItem("Vitesse de deplacement : m/s");
+			    listBox->addItem("Vitesse de deplacement :");
 			    listBox->addItem("Gyrometre :");
 			    listBox->addItem("Positionnement :");
 			    listBox->addItem("Odometre :");
 			    listBox->addItem("Infrarouge :");
 			    gui.add(listBox);
 
-			    tgui::Button::Ptr btn_selection = tgui::Button::create(THEME_CONFIG_FILE);
-			    btn_selection->setText("Select");
-			    btn_selection->setSize(windowWidth/4, windowHeight / 12);
-			    btn_selection->setPosition(windowWidth * 1/8 , windowHeight * 3/4);
-			    btn_selection->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
-			    gui.add(btn_selection);
+				
+				slider->setPosition(windowWidth/2, windowHeight/4);
+				slider->setSize(windowWidth/2, 15);
+				slider->setMaximum(100);
+				slider->setMinimum(0);
+				slider->setValue(0);
+				gui.add(slider);
+				
+				auto lbl_speed = tgui::Label::create(THEME_CONFIG_FILE);
+				lbl_speed->setText("G-Car' speed :");
+				lbl_speed->setPosition(windowWidth/2, windowHeight/4 - 60);
+				lbl_speed->setAutoSize(true);
+				gui.add(lbl_speed);
+				
+			    btn_start->setText("Start");
+			    btn_start->setSize(windowWidth/4, windowHeight / 12);
+			    btn_start->setPosition(0, windowHeight * 3/4);
+			    btn_start->connect(
+									"pressed", [&]()
+									{
+										char data[100] = "start";
+										// socket TCP:
+										socket.send(data, 100);
+									}
+								 );
+			    gui.add(btn_start);
+				
+				btn_stop->setText("Stop");
+			    btn_stop->setSize(windowWidth/4, windowHeight / 12);
+			    btn_stop->setPosition(windowWidth/4, windowHeight * 3/4);
+			    btn_stop->connect(
+									"pressed", [&]()
+									{
+										char data[100] = "stop";
+										// socket TCP:
+										socket.send(data, 100);
+									}
+								 );
+			    gui.add(btn_stop);
 
-			    tgui::RadioButton::Ptr radio_auto = tgui::RadioButton::create(THEME_CONFIG_FILE);
-			    radio_auto->setPosition(0, windowHeight * 3/4 - btn_selection->getSize().y);
+			    radio_auto->setPosition(0, windowHeight * 1/2);
 			    radio_auto->setText("Automatic");
 			    radio_auto->setSize(windowWidth/35, windowWidth/35);
 			    gui.add(radio_auto);
 
-			    tgui::RadioButton::Ptr radio_manuel = tgui::RadioButton::create(THEME_CONFIG_FILE);
 			    radio_manuel->setSize(windowWidth/35, windowWidth/35);
-			    radio_manuel->setPosition(windowWidth * 3/8, windowHeight * 3/4 - btn_selection->getSize().y );
+			    radio_manuel->setPosition(windowWidth * 3/8, windowHeight * 1/2);
 			    radio_manuel->setText("Manuel");
 			    gui.add(radio_manuel);
-
-			    tgui::MenuBar::Ptr menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
+				
 			    menu->setSize(windowWidth, 20);
 			    menu->addMenu("File");
 			    menu->addMenuItem("File", "Save");
@@ -113,40 +176,17 @@ namespace gcar
 			    menu->addMenuItem("Settings", "Disconnect");
 			    menu->addMenu("Help");
 			    menu->addMenuItem("Help", "About");
-			    menu->connectEx("MenuItemClicked", menu_navigation, std::ref(window));
+			    menu->connectEx("MenuItemClicked", menu_navigation, std::ref(window), std::ref(socket));
 			    gui.add(menu);
 
-			    tgui::Button::Ptr btn_up = tgui::Button::create(THEME_CONFIG_FILE);
-			    btn_up->setText("Up");
-			    btn_up->setSize(windowWidth/4, windowHeight / 10);
-			    btn_up->setPosition(windowWidth *5/8, windowHeight * 1/8);
-			    btn_up->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
-			    gui.add(btn_up);
-			    
-			    tgui::Button::Ptr btn_down = tgui::Button::create(THEME_CONFIG_FILE);
-			    btn_down->setText("Down");
-			    btn_down->setSize(windowWidth/4, windowHeight / 10);
-			    btn_down->setPosition(windowWidth * 5/8 , windowHeight * 3/8);
-			    btn_down->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
-			    gui.add(btn_down);
-
-			    tgui::Button::Ptr btn_left = tgui::Button::create(THEME_CONFIG_FILE);
-			    btn_left->setText("Left");
-			    btn_left->setSize(windowWidth/4, windowHeight / 10);
-			    btn_left->setPosition(windowWidth/2 , windowHeight/4);
-			    btn_left->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
-			    gui.add(btn_left);
-
-			    tgui::Button::Ptr btn_right = tgui::Button::create(THEME_CONFIG_FILE);
-			    btn_right->setText("Right");
-			    btn_right->setSize(windowWidth/4, windowHeight / 10);
-			    btn_right->setPosition(windowWidth * 3/4 , windowHeight/4);
-			    btn_right->connect("pressed", [&](){ std::cout << "Selection" << std::endl; });
-			    gui.add(btn_right);
-
-			    child->setSize(250, 120);
-				child->setPosition(windowWidth/2-250/2, windowHeight/2-120/2);
-				child->setTitle("Child window");
+				auto label = tgui::Label::create(THEME_CONFIG_FILE);
+				label->setText("You need to connect to this server:\n" + sf::IpAddress::getPublicAddress().toString());
+				
+				child->setSize(windowWidth/2, windowHeight/2);
+				child->setPosition(windowWidth/4, windowHeight/2 - windowHeight/4);
+				child->setTitle("Connection");
+				child->add(label);
+				
 				gui.add(child);
 
 		    }
@@ -156,14 +196,12 @@ namespace gcar
 		        exit(1);
 		    }
 
-		    // Hello World
-		    gcar::hello_world h ("Hello G-Car !!!");
-		    h.message();
+			// lie l'écouteur à un port
+			listener.listen(53000);
+
+			t1.launch();
 			
-			sf::Clock clock;
-			sf::Time elapsed;
-
-
+			radio_auto->check();
 			// Start
 			while (window.isOpen())
 			{
@@ -178,11 +216,6 @@ namespace gcar
 						{
 							window.close();
 						}
-						// Text
-						else if (event.type == sf::Event::TextEntered)
-						{
-							// event.text.unicode
-						}
 						// Key pressed
 						else if (event.type == sf::Event::KeyPressed)
 						{
@@ -190,24 +223,6 @@ namespace gcar
 							{
 								window.close();
 							}
-						}
-						// Key released
-						else if (event.type == sf::Event::KeyReleased)
-						{
-							// event.key.code
-						}
-						// Mouse button pressed
-						else if (event.type == sf::Event::MouseButtonPressed)
-						{
-							if (event.mouseButton.button == sf::Mouse::Left)
-							{
-								//std::cout << "Mouse left clic" << std::endl;
-							}
-						}
-						// Mouse button released
-						else if (event.type == sf::Event::MouseButtonReleased)
-						{
-							// event.mouseButton.button
 						}
                         else if (event.type == sf::Event::Resized)
                         {
@@ -218,15 +233,77 @@ namespace gcar
 						gui.handleEvent(event);
 					}
 				}
-
-				elapsed = clock.getElapsedTime();
-
-				if(elapsed.asSeconds() > 10)
+				
+				if(!client_ok)
+				{
+					radio_auto->disable();
+					radio_manuel->disable();
+					slider->disable();
+					listBox->disable();
+					btn_start->disable();
+					btn_stop->disable();
+					child->disable();
+				}
+				else
 				{
 					child->hide();
+					radio_auto->enable();
+					radio_manuel->enable();
+					slider->enable();
+					listBox->enable();
+					btn_start->enable();
+					btn_stop->enable();
+					child->enable();
 				}
-
-				std::cout << elapsed.asSeconds() << std::endl;
+				
+				char speed[255];
+				std::sprintf(speed,"%d",slider->getValue());
+				
+				// socket TCP:
+				socket.send(speed, 100);
+				
+				if(window.hasFocus())
+				{
+					if(radio_manuel->isChecked())
+					{
+						std::size_t received;
+						
+						btn_start->hide();
+						btn_stop->hide();
+						
+						if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+						{
+							char data[100] = "up";
+							// socket TCP:
+							socket.send(data, 100);
+						}
+						else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+						{
+							char data[100] = "down";
+							// socket TCP:
+							socket.send(data, 100);
+						}
+						if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+						{
+							char data[100] = "left";
+							// socket TCP:
+							socket.send(data, 100);
+						}
+						else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+						{
+							char data[100] = "right";
+							// socket TCP:
+							socket.send(data, 100);
+						}
+					}
+					else if(radio_auto->isChecked())
+					{
+						btn_start->show();
+						btn_stop->show();
+					}
+					
+				}
+				
 				// Clear the screen
 				window.clear(sf::Color(132,132,130));
 

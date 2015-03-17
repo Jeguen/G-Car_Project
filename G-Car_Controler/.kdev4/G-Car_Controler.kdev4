@@ -193,7 +193,7 @@ pattern=*.o
 targets=1
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3,Launch Configuration 4
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -244,6 +244,17 @@ Name=test__tcp_client
 Type=Native Application
 
 [Launch][Launch Configuration 3][Data]
+Project Target=G-Car_Controler,test__tcp_client
+Working Directory=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/build/
+isExecutable=false
+
+[Launch][Launch Configuration 4]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=test__tcp_client
+Type=Native Application
+
+[Launch][Launch Configuration 4][Data]
 Project Target=G-Car_Controler,test__tcp_client
 Working Directory=file:///home/rodolphe-c/Git/G-Car_Project/G-Car_Controler/build/
 isExecutable=false

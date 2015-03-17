@@ -160,7 +160,7 @@ namespace gcar
 				sprite.setPosition(sf::Vector2f(window.getSize().x/2 - sprite.getTexture()->getSize().x/2 , window.getSize().y/2 - sprite.getTexture()->getSize().y/2));
 
 				sf::Time elapsed1 = clock.getElapsedTime();
-		        std::cout << elapsed1.asSeconds() << std::endl;
+// 		        std::cout << elapsed1.asSeconds() << std::endl;
 
 		        if(int(elapsed1.asMilliseconds())%1 == 0 && alpha <255 && transition)
 		        {
