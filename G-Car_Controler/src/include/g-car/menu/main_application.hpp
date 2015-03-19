@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <thread>
 #include <string.h>
+#include <math.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -65,6 +66,8 @@ namespace gcar
 			std::cout << "You pressed the '" << callback.text.toAnsiString() << "' button." << std::endl;
 			if(callback.text.toAnsiString() == "Exit")
 			{
+				listener.close();
+				socket.disconnect();
 				exit(0);
 			}
 			else if(callback.text.toAnsiString() == "About")
@@ -87,6 +90,7 @@ namespace gcar
 			tgui::Gui gui(window);
 			auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);
 			auto slider = tgui::Slider::create(THEME_CONFIG_FILE);
+			auto slider2 = tgui::Slider::create(THEME_CONFIG_FILE);
 			auto radio_auto = tgui::RadioButton::create(THEME_CONFIG_FILE);
 			auto radio_manuel = tgui::RadioButton::create(THEME_CONFIG_FILE);
 			auto menu = tgui::MenuBar::create(THEME_CONFIG_FILE);
@@ -118,7 +122,7 @@ namespace gcar
 			    gui.add(listBox);
 
 				
-				slider->setPosition(windowWidth/2, windowHeight/4);
+				slider->setPosition(windowWidth/2, windowHeight/8);
 				slider->setSize(windowWidth/2, 15);
 				slider->setMaximum(100);
 				slider->setMinimum(0);
@@ -127,9 +131,22 @@ namespace gcar
 				
 				auto lbl_speed = tgui::Label::create(THEME_CONFIG_FILE);
 				lbl_speed->setText("G-Car' speed :");
-				lbl_speed->setPosition(windowWidth/2, windowHeight/4 - 60);
+				lbl_speed->setPosition(windowWidth/2, windowHeight/8 - 120);
 				lbl_speed->setAutoSize(true);
 				gui.add(lbl_speed);
+				
+				slider2->setPosition(windowWidth/2, windowHeight/4);
+				slider2->setSize(windowWidth/2, 15);
+				slider2->setMaximum(100);
+				slider2->setMinimum(0);
+				slider2->setValue(50);
+				gui.add(slider2);
+				
+				auto lbl_speed1 = tgui::Label::create(THEME_CONFIG_FILE);
+				lbl_speed1->setText("G-Car' angular speed :");
+				lbl_speed1->setPosition(windowWidth/2, windowHeight/4 - 60);
+				lbl_speed1->setAutoSize(true);
+				gui.add(lbl_speed1);
 				
 			    btn_start->setText("Start");
 			    btn_start->setSize(windowWidth/4, windowHeight / 12);
@@ -201,6 +218,9 @@ namespace gcar
 
 			t1.launch();
 			
+			bool joystickConnect = false;
+			sf::Clock clock;
+			sf::Clock moving_clock;
 			radio_auto->check();
 			// Start
 			while (window.isOpen())
@@ -214,6 +234,8 @@ namespace gcar
 						// Close
 						if (event.type == sf::Event::Closed)
 						{
+							listener.close();
+							socket.disconnect();
 							window.close();
 						}
 						// Key pressed
@@ -229,10 +251,18 @@ namespace gcar
                             window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                             gui.setView(window.getView());
                         }
+				float const elapsed = clock.restart().asSeconds();
 
 						gui.handleEvent(event);
 					}
 				}
+				
+				/// Time
+				float const elapsed = clock.restart().asSeconds();
+				
+				float const moving = 500 * elapsed;
+				
+				std::cout << moving << std::endl;
 				
 				if(!client_ok)
 				{
@@ -256,16 +286,19 @@ namespace gcar
 					child->enable();
 				}
 				
-				char speed[255];
-				std::sprintf(speed,"%d",slider->getValue());
-				
-				// socket TCP:
-				socket.send(speed, 100);
-				
 				if(window.hasFocus())
 				{
+					char speed[10];
+					sprintf(speed,"%d",slider->getValue());
+					
+					// socket TCP:
+					socket.send(speed, 100);
+					
 					if(radio_manuel->isChecked())
 					{
+						char mode[10] = "manuel";
+						socket.send(mode, 100);
+						
 						std::size_t received;
 						
 						btn_start->hide();
@@ -295,9 +328,61 @@ namespace gcar
 							// socket TCP:
 							socket.send(data, 100);
 						}
+						if(sf::Joystick::isConnected(1))
+						{
+							joystickConnect = true;
+							std::size_t angular_speed_value = slider2->getValue();
+							if( sf::Joystick::getAxisPosition(1, sf::Joystick::Y) < 0 )
+							{
+								
+								char data[100] = "up";
+								// socket TCP:
+								socket.send(data, 100);
+							}
+							else if(sf::Joystick::getAxisPosition(1, sf::Joystick::Y) > 0)
+							{
+								
+								char data[100] = "down";
+								// socket TCP:
+								socket.send(data, 100);
+							}
+							if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) < 0)
+							{
+								slider2->setValue(angular_speed_value-(int)moving);
+								char data[100] = "left";
+								// socket TCP:
+								socket.send(data, 100);
+							}
+							else if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) > 0)
+							{
+								slider2->setValue(angular_speed_value+(int)moving);
+								char data[100] = "right";
+								// socket TCP:
+								socket.send(data, 100);
+							}
+							else
+							{
+								slider2->setValue(50);
+							}
+							std::size_t speed_value = slider->getValue();
+							if (sf::Joystick::isButtonPressed(1, 0))
+							{
+								slider->setValue(speed_value-(int)moving);
+							}
+							else if (sf::Joystick::isButtonPressed(1, 3))
+							{
+								slider->setValue(speed_value+(int)moving);
+							}
+						}
+						else
+						{
+							joystickConnect = false;
+						}
 					}
 					else if(radio_auto->isChecked())
 					{
+						char mode[10] = "auto";
+						socket.send(mode, 100);
 						btn_start->show();
 						btn_stop->show();
 					}
