@@ -68,6 +68,7 @@ namespace gcar
 			{
 				listener.close();
 				socket.disconnect();
+				t1.terminate();
 				exit(0);
 			}
 			else if(callback.text.toAnsiString() == "About")
@@ -197,7 +198,7 @@ namespace gcar
 			    gui.add(menu);
 
 				auto label = tgui::Label::create(THEME_CONFIG_FILE);
-				label->setText("You need to connect to this server:\n" + sf::IpAddress::getPublicAddress().toString());
+				label->setText("You need to connect the client to this server:\n" + sf::IpAddress::getPublicAddress().toString());
 				
 				child->setSize(windowWidth/2, windowHeight/2);
 				child->setPosition(windowWidth/4, windowHeight/2 - windowHeight/4);
@@ -214,7 +215,7 @@ namespace gcar
 		    }
 
 			// lie l'écouteur à un port
-			listener.listen(53000);
+			listener.listen(54000);
 
 			t1.launch();
 			
@@ -222,6 +223,12 @@ namespace gcar
 			sf::Clock clock;
 			sf::Clock moving_clock;
 			radio_auto->check();
+			
+			const int YOLO = 5000;
+			int move_A = 0;
+			int move_B = 0;
+			int frequence = 42;
+			
 			// Start
 			while (window.isOpen())
 			{
@@ -236,15 +243,8 @@ namespace gcar
 						{
 							listener.close();
 							socket.disconnect();
+							t1.terminate();
 							window.close();
-						}
-						// Key pressed
-						else if (event.type == sf::Event::KeyPressed)
-						{
-							if (event.key.code == sf::Keyboard::Escape)
-							{
-								window.close();
-							}
 						}
                         else if (event.type == sf::Event::Resized)
                         {
@@ -262,13 +262,12 @@ namespace gcar
 				
 				float const moving = 500 * elapsed;
 				
-				std::cout << moving << std::endl;
-				
 				if(!client_ok)
 				{
 					radio_auto->disable();
 					radio_manuel->disable();
 					slider->disable();
+					slider2->disable();
 					listBox->disable();
 					btn_start->disable();
 					btn_stop->disable();
@@ -286,82 +285,73 @@ namespace gcar
 					child->enable();
 				}
 				
+				
+				/// Test if window is focused
 				if(window.hasFocus())
 				{
-					char speed[10];
-					sprintf(speed,"%d",slider->getValue());
-					
-					// socket TCP:
-					socket.send(speed, 100);
 					
 					if(radio_manuel->isChecked())
 					{
-						char mode[10] = "manuel";
-						socket.send(mode, 100);
-						
-						std::size_t received;
-						
 						btn_start->hide();
 						btn_stop->hide();
 						
+						auto bck_move_A = move_A;
+						auto bck_move_B = move_B;
+						
 						if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 						{
-							char data[100] = "up";
-							// socket TCP:
-							socket.send(data, 100);
+							move_A = YOLO + slider->getValue();
 						}
 						else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 						{
-							char data[100] = "down";
-							// socket TCP:
-							socket.send(data, 100);
+							move_A = YOLO - slider->getValue();
 						}
 						if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 						{
-							char data[100] = "left";
-							// socket TCP:
-							socket.send(data, 100);
+							move_B = 10;
+							slider2->setValue(slider2->getValue()-(int)moving);
 						}
 						else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 						{
-							char data[100] = "right";
-							// socket TCP:
-							socket.send(data, 100);
+							move_B = 50;
+							slider2->setValue(slider2->getValue()+(int)moving);
 						}
+						else
+						{
+							move_B = 0;
+							slider2->setValue(50);
+						}
+						
 						if(sf::Joystick::isConnected(1))
 						{
 							joystickConnect = true;
 							std::size_t angular_speed_value = slider2->getValue();
 							if( sf::Joystick::getAxisPosition(1, sf::Joystick::Y) < 0 )
 							{
+								move_A = YOLO + slider->getValue();
 								
-								char data[100] = "up";
-								// socket TCP:
-								socket.send(data, 100);
 							}
 							else if(sf::Joystick::getAxisPosition(1, sf::Joystick::Y) > 0)
 							{
-								
-								char data[100] = "down";
-								// socket TCP:
-								socket.send(data, 100);
-							}
-							if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) < 0)
-							{
-								slider2->setValue(angular_speed_value-(int)moving);
-								char data[100] = "left";
-								// socket TCP:
-								socket.send(data, 100);
-							}
-							else if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) > 0)
-							{
-								slider2->setValue(angular_speed_value+(int)moving);
-								char data[100] = "right";
-								// socket TCP:
-								socket.send(data, 100);
+								move_A = YOLO - slider->getValue();
 							}
 							else
 							{
+								move_A = YOLO;
+							}
+							if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) < 0)
+							{
+								move_B = 10;
+								slider2->setValue(angular_speed_value-(int)moving);
+							}
+							else if(sf::Joystick::getAxisPosition(1, sf::Joystick::X) > 0)
+							{
+								move_B = 50;
+								slider2->setValue(angular_speed_value+(int)moving);
+							}
+							else
+							{
+								move_B = 0;
 								slider2->setValue(50);
 							}
 							std::size_t speed_value = slider->getValue();
@@ -378,11 +368,18 @@ namespace gcar
 						{
 							joystickConnect = false;
 						}
+						
+						/// Send Data
+						if(bck_move_A != move_A || bck_move_B != move_B)
+						{
+// 							std::string paquet = "A "+std::to_string(move_A)+" B "+std::to_string(move_B)+" C 50000 "
+							std::string paquet = "A 960 C 0 D 50000 ";
+							socket.send(paquet.c_str(), 1024);
+							std::cout << "Envoie du paquet : " << paquet.c_str() << std::endl;
+						}
 					}
 					else if(radio_auto->isChecked())
 					{
-						char mode[10] = "auto";
-						socket.send(mode, 100);
 						btn_start->show();
 						btn_stop->show();
 					}
@@ -391,9 +388,6 @@ namespace gcar
 				
 				// Clear the screen
 				window.clear(sf::Color(132,132,130));
-
-				// Draw http://www.sfml-dev.org/tutorials/2.1/graphics-draw.php
-				// TODO
 
 				// Draw GUI
 				gui.draw();
