@@ -29,6 +29,8 @@
 
 #include "help_application.hpp"
 
+#include "opencv2/opencv.hpp"
+
 
 #define THEME_CONFIG_FILE "../media/TGUI/widgets/Black.conf"
 
@@ -88,7 +90,26 @@ namespace gcar
 
 		inline void start_app (sf::RenderWindow & window)
 		{
+			
+			cv::VideoCapture cap(0); // open the video file for reading
+			if(!cap.isOpened())
+			{
+				exit(0);
+			}
+			
+			cv::Mat frameRGB, frameRGBA;
+			sf::Image image;
+			sf::Texture texture;
+			sf::Sprite sprite;
+			
 			tgui::Gui gui(window);
+			
+			auto windowWidth = tgui::bindWidth(gui);
+			auto windowHeight = tgui::bindHeight(gui);
+			auto canvas = tgui::Canvas::create({512, 384});
+			canvas->setPosition(0, 0);
+			canvas->setSize(windowWidth/2, windowHeight/2);
+			gui.add(canvas);
 			auto child = tgui::ChildWindow::create(THEME_CONFIG_FILE);
 			auto slider = tgui::Slider::create(THEME_CONFIG_FILE);
 			auto slider2 = tgui::Slider::create(THEME_CONFIG_FILE);
@@ -104,9 +125,6 @@ namespace gcar
 				
 				// Get a bound version of the window size
 			    // Passing this to setPosition or setSize will make the widget automatically update when the view of the gui changes
-			    auto windowWidth = tgui::bindWidth(gui);
-			    auto windowHeight = tgui::bindHeight(gui);
-
 			    sf::Image icon;
 			    icon.loadFromFile("../media/img/icon.png");
 			    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -175,13 +193,13 @@ namespace gcar
 								 );
 			    gui.add(btn_stop);
 
-			    radio_auto->setPosition(0, windowHeight * 1/2);
+			    radio_auto->setPosition(0, windowHeight * 5/8);
 			    radio_auto->setText("Automatic");
 			    radio_auto->setSize(windowWidth/35, windowWidth/35);
 			    gui.add(radio_auto);
 
 			    radio_manuel->setSize(windowWidth/35, windowWidth/35);
-			    radio_manuel->setPosition(windowWidth * 3/8, windowHeight * 1/2);
+			    radio_manuel->setPosition(windowWidth * 3/8, windowHeight * 5/8);
 			    radio_manuel->setText("Manuel");
 			    gui.add(radio_manuel);
 				
@@ -386,10 +404,35 @@ namespace gcar
 					
 				}
 				
+				cap >> frameRGB;
+				
+				if(frameRGB.empty())
+				{
+					break;
+				}
+				
+				cv::cvtColor(frameRGB, frameRGBA, cv::COLOR_BGR2RGBA);
+				
+				image.create(frameRGBA.cols, frameRGBA.rows, frameRGBA.ptr());
+				
+				if (!texture.loadFromImage(image))
+				{
+					break;
+				}
+
+				
+				sprite.setTexture(texture);
+				sprite.setScale((float)window.getSize().x/2 / texture.getSize().x, (float)window.getSize().y/2 / texture.getSize().y);
+				
 				// Clear the screen
 				window.clear(sf::Color(132,132,130));
 
 				// Draw GUI
+				
+				//sprite.setScale(0.5f, 0.5f);
+				canvas->clear();
+				canvas->draw(sprite);
+				canvas->display();
 				gui.draw();
 
 				// Display

@@ -11,12 +11,13 @@ This software can retrieve information about the G-Car, and it allows the remote
 | System requirement for G-Car Controler  |
  -----------------------------------------
 
-The required packages are the packages required by SFML 2.2.
-http://www.sfml-dev.org/download/sfml/2.2/index-fr.php
+The required packages :
 
-You also need to install Thōth and the required packages and TGUI : 
-https://gitorious.org/thoth/thoth/source/8128ca1df0ba9de1d81de57a409be379a7068772:
-https://github.com/texus/TGUI
+- SFML 2.2 : http://www.sfml-dev.org/download/sfml/2.2/index-fr.php
+- Thōth : https://gitorious.org/thoth/thoth/source/8128ca1df0ba9de1d81de57a409be379a7068772:
+- TGUI : https://github.com/texus/TGUI
+- OpenCV : opencv.org/
+
 
  ---------------------------------
 | Compilation of G-Car Controler  |

@@ -74,6 +74,10 @@ cmake_minimum_required(VERSION 2.6)
 		message(FATAL_ERROR "TGUI library not found :(")
 	endif()
 
+# OpenCV
+	find_package( OpenCV REQUIRED )
+	include_directories( ${OpenCV_INCLUDE_DIRS} )
+
 # G-Car Project
 	message(STATUS "---")
 	set(g-car_INCLUDE "./src/include")
@@ -100,6 +104,7 @@ cmake_minimum_required(VERSION 2.6)
 		
 		add_executable(${test_name} ${test_source})
 		target_link_libraries(${test_name} ${TGUI_LIBRARY} ${THOTH_SFML_LIBRARY})
+		target_link_libraries( ${test_name} ${OpenCV_LIBS} )	
 		
 	endforeach()
 
